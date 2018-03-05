@@ -1,0 +1,17 @@
+>M11951|TRBV24-1*01|Homo sapiens|F|V-REGION|189..476|288 nt|1| | | | |288+0=288| | |
+gatgctgatgttacccagaccccaaggaataggatcacaaagacaggaaagaggattatgctggaatgttctcagactaagggtcatgatagaatgtactggtatcgacaagacccaggactgggcctacggttgatctattactcctttgatgtcaaagatataaacaaaggagagatctctgatggatacagtgtctctcgacaggcacaggctaaattctccctgtccctagagtctgccatccccaaccagacagctctttacttctgtgccaccagtgatttg
+
+M11951|TRBV24-1*01|Homo sapiens|F|V-REGION|189..476|288 nt|1| | | | |288+0=288| | |;-3
+
+
+>L36092|TRBV26*01|Homo sapiens|P|V-REGION|529534..529820|287 nt|1| | | | |287+0=287| | |
+gatgctgtagttacacaattcccaagacacagaatcattgggacaggaaaggaattcattctacagtgttcccagaatatgaatcatgttacaatgtactggtatcgacaggacccaggacttggactgaagctggtctattattcacctggcactgggagcactgaaaaaggagatatctctgaggggtatcatgtttcttgaaatactatagcatcttttcccctgaccctgaagtctgccagcaccaaccagacatctgtgtatctctatgccagcagttcatc
+
+L36092|TRBV26*01|Homo sapiens|P|V-REGION|529534..529820|287 nt|1| | | | |287+0=287| | |;66
+
+
+>U03115|TRBV17*01|Homo sapiens|ORF|V-REGION|72572..72858|287 nt|1| | | | |287+0=287| | |
+gagcctggagtcagccagacccccagacacaaggtcaccaacatgggacaggaggtgattctgaggtgcgatccatcttctggtcacatgtttgttcactggtaccgacagaatctgaggcaagaaatgaagttgctgatttccttccagtaccaaaacattgcagttgattcagggatgcccaaggaacgattcacagctgaaagacctaacggaacgtcttccacgctgaagatccatcccgcagagccgagggactcagccgtgtatctctacagtagcggtgg
+
+U03115|TRBV17*01|Homo sapiens|ORF|V-REGION|72572..72858|287 nt|1| | | | |287+0=287| | |;66
+
