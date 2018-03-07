@@ -1,6 +1,9 @@
 '''anchors_generator.py
 
-This python file runs ....
+This python file runs to read in fasta file of V genes or J genes in T-cell
+or B-cell to translate DNA genes to amino acids and then finding the index of
+the last occurrence of cysteine in the V genes or the first occurence of
+phenylalanine followed by glycine in J genes.
 '''
 import argparse
 import sys
