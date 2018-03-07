@@ -60,6 +60,12 @@ def parse_j_genes(infile):
 
 
 def parse_v_genes(infile):
+    '''Find the anchors in a v genes file
+
+    Attributes
+    ----------
+        infile (str): full path to input file
+    '''
     for seq_record in SeqIO.parse("genomicVs.fasta", "fasta"):
         floor = math.floor(len(seq_record.seq)/3)
         index = len(seq_record.seq) - (floor*3)
@@ -78,6 +84,12 @@ def parse_v_genes(infile):
 
 
 def generate_anchor_file(fileName):
+    '''generate the anchor file for both v genes and j genes
+
+    Attributes
+    ----------
+        fileName (str): file name for the anchor file generated
+    '''
     with open(fileName, 'w') as csv_file:
         fieldnames = ['gene','anchor_index']
         csv_writer = csv.DictWriter(csv_file,fieldnames=fieldnames,delimiter=';')
@@ -89,6 +101,13 @@ def generate_anchor_file(fileName):
 
 def generate_error_file(fileName):
     # only works for csv files
+    '''Generate the error anchor file for v genes with no C or C apearance
+       in the begenning of the chain
+
+    Attributes
+    ----------
+        fileName (str): file name for the complementary anchor file generated
+    '''
     fileName = fileName.split('.csv')[0] + '_error.csv'
     with open(fileName, 'w') as csv_file:
         fieldnames = ['gene','sequence','anchor_index']
@@ -107,6 +126,7 @@ if __name__ == '__main__':
     parser.add_argument('-o', help = 'path to the output file')
     args = parser.parse_args()
 
+    # message for wrong command line
     if (args.t == None or args.i == None or args.o == None):
         print("Command line arugment error\nCorrect Usage:\npython anchors_generator.py -t {V,J} -i <full path of input file> -o <full path to output file>")
         sys.exit()
