@@ -50,11 +50,12 @@ def parse_j_genes(infile):
             seq_record_temp = seq_record.seq[i:]
             floor = math.floor(len(seq_record_temp)/3)
             index = len(seq_record_temp) - (floor*3)
-            while index != 0:
+            if index != 0:
                 seq_record_temp = seq_record_temp[:-(index)]
             # translating from dna to amino acid and find first FG
             # translating from dna to amino acid and find first (F/W)X(S/T)
             traslated_seq = seq_record_temp.translate()
+            position = -1
             m = re.search('[FW]G.?G[ST]', traslated_seq)
             if m:
                 position = m.start()
@@ -78,7 +79,8 @@ def parse_v_genes(infile):
     for seq_record in SeqIO.parse("genomicVs.fasta", "fasta"):
         floor = math.floor(len(seq_record.seq)/3)
         index = len(seq_record.seq) - (floor*3)
-        seq_record.seq = seq_record.seq[:-(index)]
+        if index != 0:
+            seq_record.seq = seq_record.seq[:-(index)]
         anchor_index = str(seq_record.seq.translate().rfind('C')*3)
 
         #filter out abnormal V genes
