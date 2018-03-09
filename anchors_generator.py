@@ -54,9 +54,9 @@ def parse_j_genes(infile):
                 seq_record_temp = seq_record_temp[:-(index)]
             # translating from dna to amino acid and find first FG
             # translating from dna to amino acid and find first (F/W)X(S/T)
-            traslated_seq = seq_record_temp.translate()
+            translated_seq = seq_record_temp.translate()
             position = -1
-            m = re.search('[FW]G.?G[ST]', traslated_seq)
+            m = re.search('[FW]G.?G[ST]', str(translated_seq))
             if m:
                 position = m.start()
             index_F = ((position*3)+i)
@@ -101,6 +101,7 @@ def generate_anchor_file(fileName):
     ----------
         fileName (str): file name for the anchor file generated
     '''
+    fileName = fileName + '.csv'
     with open(fileName, 'w') as csv_file:
         fieldnames = ['gene','anchor_index']
         csv_writer = csv.DictWriter(csv_file,fieldnames=fieldnames,delimiter=';')
