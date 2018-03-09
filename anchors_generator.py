@@ -10,6 +10,7 @@ import sys
 from Bio import SeqIO
 import csv
 import math
+import re
 
 results = []
 indexs = []
@@ -49,10 +50,15 @@ def parse_j_genes(infile):
             seq_record_temp = seq_record.seq[i:]
             floor = math.floor(len(seq_record_temp)/3)
             index = len(seq_record_temp) - (floor*3)
-            seq_record_temp = seq_record_temp[:-(index)]
+            while index != 0:
+                seq_record_temp = seq_record_temp[:-(index)]
             # translating from dna to amino acid and find first FG
+            # translating from dna to amino acid and find first (F/W)X(S/T)
             traslated_seq = seq_record_temp.translate()
-            index_F = ((seq_record_temp.translate().find('FG')*3)+i)
+            m = re.search('[FW]G.?G[ST]', traslated_seq)
+            if m:
+                position = m.start()
+            index_F = ((position*3)+i)
             ind.append(index_F)
         # look for only positive indexs
         pos_idx = [i for i in ind if i >=0]
