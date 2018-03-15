@@ -30,6 +30,7 @@ def main(args):
         generate_error_file(output_dir)
     else:
         parse_j_genes(input_dir)
+        generate_error_file(output_dir)
 
     generate_anchor_file(output_dir)
 
@@ -64,9 +65,13 @@ def parse_j_genes(infile):
         # look for only positive indexs
         pos_idx = [i for i in ind if i >=0]
         if len(pos_idx) != 0:
-                indexs.append(str(min(pos_idx)))
+            indexs.append(str(min(pos_idx)))
         else:
-                indexs.append(str(0))
+            error_indexs.append(str(0))
+            error_results.append(seq_record.description)
+            sequence.append(seq_record.seq)
+
+
 
 
 def parse_v_genes(infile):
@@ -114,7 +119,9 @@ def generate_anchor_file(fileName):
 def generate_error_file(fileName):
     # only works for csv files
     '''Generate the error anchor file for v genes with no C or C apearance
-       in the begenning of the chain
+       in the begenning of the chain and generate the error anchor file for j
+       genes with no [FW]GXG[ST]
+
 
     Attributes
     ----------
