@@ -18,7 +18,6 @@ error_results =[]
 error_indexs = []
 sequence = []
 
-'''
 def main(args):
 
     # Read in command line arguments to variables
@@ -34,7 +33,6 @@ def main(args):
         generate_error_file(output_dir)
 
     generate_anchor_file(output_dir)
-'''
 
 def parse_j_genes(infile):
     '''Find the anchors in a j genes file
@@ -137,7 +135,6 @@ def generate_error_file(fileName):
         for error_result, seq, error_index in zip(error_results, sequence, error_indexs):
             csv_writer.writerow({'gene': error_result, 'sequence':seq,'anchor_index': error_index})
 
-'''
 if __name__ == '__main__':
 
     # Set commend line arugments
@@ -152,4 +149,3 @@ if __name__ == '__main__':
         print("Command line arugment error\nCorrect Usage:\npython anchors_generator.py -t {V,J} -i <full path of input file> -o <full path to output file>")
         sys.exit()
     main(args)
-'''
