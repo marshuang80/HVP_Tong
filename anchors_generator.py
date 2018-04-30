@@ -124,7 +124,7 @@ def parse_v_genes(infile):
     ----------
         infile (str): full path to input file
     '''
-    for seq_record in SeqIO.parse("genomicVs.fasta", "fasta"):
+    for seq_record in SeqIO.parse(infile, "fasta"):
         floor = math.floor(len(seq_record.seq)/3)
         index = len(seq_record.seq) - (floor*3)
         if index != 0:
