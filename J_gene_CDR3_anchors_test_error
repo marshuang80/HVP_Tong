@@ -1,8 +1,2 @@
 gene;sequence;anchor_index
-TRAJ16*01;ggttttcagatggccagaagctgctctttgcaaggggaaccatgttaaaggtggatctta;0
-TRAJ35*01;gataggctttgggaatgtgctgcattgcgggtccggcactcaagtgattgttttaccac;0
-TRAJ51*01;agatgcgtgacagctatgagaagctgatatttggaaaggagacatgactaactgtgaagccaa;0
-TRAJ55*01;acaagtgctggtaatgctcctgttggggaaaggggatgagtacaaaaataaatccaa;0
-TRAJ56*01;ttatactggagccaatagtaagctgacatttggaaaaggaataactctgagtgttagaccag;0
-TRAJ61*01;ggtaccgggttaataggaaactgacatttggagccaacactagaggaatcatgaaactca;0
-TRAJ7*01;tgactatgggaacaacagactcgcttttgggaaggggaaccaagtggtggtcataccaa;0
+X02987|TRBJ2-7*02|Homo sapiens|ORF|J-REGION|1890..1936|47 nt|2| | | | |47+0=47| | |;ctcctacgagcagtacgtcgggccgggcaccaggctcacggtcacag;0

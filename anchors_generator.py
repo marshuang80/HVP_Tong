@@ -20,6 +20,9 @@ sequence = []
 extras = []
 amino_acids = []
 gene_names = []
+accessions = []
+functionalitys = []
+partials = []
 
 def main(args):
 
@@ -30,6 +33,8 @@ def main(args):
 
     if (v_or_f == "V" or v_or_f == "v"):
         parse_v_genes(input_dir)
+        # TODO:
+        # extras, aminoacids... = parse_v_genens....
         generate_error_file(output_dir)
         generate_extra_nucleotides_file_Vgene(output_dir)
     else:
@@ -76,11 +81,16 @@ def parse_j_genes(infile):
         #get the gene name
         if "|" not in seq_record.description:
             gene_name = seq_record.description
-
+            accession = ""
+            functionality = ""
+            partial = ""
         else:
             splitted = seq_record.description.split('|')
             gene_name = splitted[1]
-
+            accession = splitted[0]
+            functionality = splitted[3]
+            partial = splitted[13]
+            
         # look for only positive indexs
         pos_idx = [i for i in ind if i >=0]
 
@@ -105,17 +115,29 @@ def parse_j_genes(infile):
 
             # get the extras
             extra = seq_record.seq[0:reading_frame-1]
-
             extras.append(extra)
             amino_acids.append(amino_acid)
             gene_names.append(gene_name)
+            accessions.append(accession)
+            functionalitys.append(functionality)
+            partials.append(partial)        
+                   
         else:
             error_indexs.append(str(0))
             error_results.append(seq_record.description)
             sequence.append(seq_record.seq)
+    # TODO: return all stuff,
+    # TODO: Dictionary
+    # return extras, amino_acids ...
+# dic = {key: value}
+'''
+dic = {'extras' : [],
+       'amino_acids' : [],
+       .....
+}
 
 
-
+'''
 
 def parse_v_genes(infile):
     '''Find the anchors in a v genes file
@@ -141,10 +163,15 @@ def parse_v_genes(infile):
         #get the gene name
         if "|" not in seq_record.description:
             gene_name = seq_record.description
-
+            accession = ""
+            functionality = ""
+            partial = ""
         else:
             splitted = seq_record.description.split('|')
             gene_name = splitted[1]
+            accession = splitted[0]
+            functionality = splitted[3]
+            partial = splitted[13]
 
         #filter out abnormal V genes
         threshold = len(seq_record.seq)/2
@@ -154,10 +181,14 @@ def parse_v_genes(infile):
             extras.append(extra)
             amino_acids.append(amino_acid)
             gene_names.append(gene_name)
+            accessions.append(accession)
+            functionalitys.append(functionality)
+            partials.append(partial)    
         else:
             error_indexs.append(anchor_index)
             error_results.append(seq_record.description)
             sequence.append(seq_record.seq)
+
 
 
 def generate_anchor_file(fileName):
@@ -201,23 +232,23 @@ def generate_error_file(fileName):
 def generate_extra_nucleotides_file_Vgene(fileName):
     fileName = fileName.split('.csv')[0] + '_extra_nucleotides.csv'
     with open(fileName, 'w') as csv_file:
-        fieldnames = ['gene_name','amino_acids','extra_nucleotides']
+        fieldnames = ['gene_name','amino_acids','extra_nucleotides','accession','functionality','partial']
         csv_writer = csv.DictWriter(csv_file,fieldnames=fieldnames,delimiter=';')
         csv_writer.writeheader()
 
-        for gene_name, amino_acid, extra in zip(gene_names, amino_acids, extras):
-            csv_writer.writerow({'gene_name': gene_name, 'amino_acids': amino_acid,'extra_nucleotides': extra})
+        for gene_name, amino_acid, extra, accession, functionality, partial in zip(gene_names, amino_acids, extras, accessions, functionalitys, partials):
+            csv_writer.writerow({'gene_name': gene_name, 'amino_acids': amino_acid,'extra_nucleotides': extra,'accession':accession,'functionality':functionality,'partial':partial})
 
 
 def generate_extra_nucleotides_file_Jgene(fileName):
     fileName = fileName.split('.csv')[0] + '_extra_nucleotides.csv'
     with open(fileName, 'w') as csv_file:
-        fieldnames = ['gene_name','extra_nucleotides','amino_acids']
+        fieldnames = ['gene_name','extra_nucleotides','amino_acids','accession','functionality','partial']
         csv_writer = csv.DictWriter(csv_file,fieldnames=fieldnames,delimiter=';')
         csv_writer.writeheader()
 
-        for gene_name, extra, amino_acid in zip(gene_names,extras,amino_acids):
-            csv_writer.writerow({'gene_name': gene_name,'extra_nucleotides': extra,'amino_acids': amino_acid})
+        for gene_name, extra, amino_acid, accession, functionality, partial in zip(gene_names, extras, amino_acids, accessions, functionalitys, partials):
+            csv_writer.writerow({'gene_name': gene_name,'extra_nucleotides': extra,'amino_acids':amino_acid,'accession':accession,'functionality':functionality,'partial':partial})
 
 
 if __name__ == '__main__':
