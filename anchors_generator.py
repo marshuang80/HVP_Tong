@@ -12,37 +12,43 @@ import csv
 import math
 import re
 
-results = []
-indexs = []
-error_results =[]
-error_indexs = []
-sequence = []
-extras = []
-amino_acids = []
-gene_names = []
-accessions = []
-functionalitys = []
-partials = []
+# TODO: keep each line of code within 80 characters, (e.g. line 288)
 
 def main(args):
 
     # Read in command line arguments to variables
-    v_or_f = args.t
+    v_or_f = args.t.upper()
     input_dir = args.i
     output_dir = args.o
 
-    if (v_or_f == "V" or v_or_f == "v"):
-        parse_v_genes(input_dir)
+    if v_or_f == "V" :
+        output_data = parse_v_genes(input_dir)
         # TODO:
         # extras, aminoacids... = parse_v_genens....
-        generate_error_file(output_dir)
-        generate_extra_nucleotides_file_Vgene(output_dir)
+        generate_extra_nucleotides_file_Vgene(output_dir,
+                                              output_data['gene_names'],
+                                              output_data['extras'],
+                                              output_data['amino_acids'],
+                                              output_data['accessions'],
+                                              output_data['functionalitys'],
+                                              output_data['partials'])
     else:
-        parse_j_genes(input_dir)
-        generate_error_file(output_dir)
-        generate_extra_nucleotides_file_Jgene(output_dir)
+        output_data = parse_j_genes(input_dir)
+        generate_extra_nucleotides_file_Jgene(output_dir,
+                                              output_data['gene_names'],
+                                              output_data['extras'],
+                                              output_data['amino_acids'],
+                                              output_data['accessions'],
+                                              output_data['functionalitys'],
+                                              output_data['partials'])
+    generate_error_file(output_dir,
+                        output_data['error_results'],
+                        output_data['sequence'],
+                        output_data['error_indexs'])
+    generate_anchor_file(output_dir,
+                         output_data['results'],
+                         output_data['indexs'])
 
-    generate_anchor_file(output_dir)
 
 def parse_j_genes(infile):
     '''Find the anchors in a j genes file
@@ -51,6 +57,21 @@ def parse_j_genes(infile):
     ----------
         infile (str): full path to input file
     '''
+
+    # dictionary to store resulting data
+    data = {'results': [],
+            'indexs' : [],
+            'error_results' :[],
+            'error_indexs' : [],
+            'sequence' : [],
+            'extras' : [],
+            'amino_acids' : [],
+            'gene_names' : [],
+            'accessions' : [],
+            'functionalitys' : [],
+            'partials' : []
+            }
+
     for seq_record in SeqIO.parse(infile, "fasta"):
         ind = []
         extra_indexs = []
@@ -90,7 +111,7 @@ def parse_j_genes(infile):
             accession = splitted[0]
             functionality = splitted[3]
             partial = splitted[13]
-            
+
         # look for only positive indexs
         pos_idx = [i for i in ind if i >=0]
 
@@ -110,34 +131,25 @@ def parse_j_genes(infile):
 
             pos_idx = str(pos_idx)
 
-            indexs.append(pos_idx)
-            results.append(seq_record.description)
+            data['indexs'].append(pos_idx)
+            data['results'].append(seq_record.description)
 
             # get the extras
             extra = seq_record.seq[0:reading_frame-1]
-            extras.append(extra)
-            amino_acids.append(amino_acid)
-            gene_names.append(gene_name)
-            accessions.append(accession)
-            functionalitys.append(functionality)
-            partials.append(partial)        
-                   
+            data['extras'].append(extra)
+            data['amino_acids'].append(amino_acid)
+            data['gene_names'].append(gene_name)
+            data['accessions'].append(accession)
+            data['functionalitys'].append(functionality)
+            data['partials'].append(partial)
+
         else:
-            error_indexs.append(str(0))
-            error_results.append(seq_record.description)
-            sequence.append(seq_record.seq)
-    # TODO: return all stuff,
-    # TODO: Dictionary
-    # return extras, amino_acids ...
-# dic = {key: value}
-'''
-dic = {'extras' : [],
-       'amino_acids' : [],
-       .....
-}
+            data['error_indexs'].append(str(0))
+            data['error_results'].append(seq_record.description)
+            data['sequence'].append(seq_record.seq)
 
+    return data
 
-'''
 
 def parse_v_genes(infile):
     '''Find the anchors in a v genes file
@@ -146,6 +158,21 @@ def parse_v_genes(infile):
     ----------
         infile (str): full path to input file
     '''
+
+    # dictionary to store resulting data
+    data = {'results': [],
+            'indexs' : [],
+            'error_results' :[],
+            'error_indexs' : [],
+            'sequence' : [],
+            'extras' : [],
+            'amino_acids' : [],
+            'gene_names' : [],
+            'accessions' : [],
+            'functionalitys' : [],
+            'partials' : []
+            }
+
     for seq_record in SeqIO.parse(infile, "fasta"):
         floor = math.floor(len(seq_record.seq)/3)
         index = len(seq_record.seq) - (floor*3)
@@ -176,27 +203,30 @@ def parse_v_genes(infile):
         #filter out abnormal V genes
         threshold = len(seq_record.seq)/2
         if int(anchor_index) > threshold:
-            results.append(seq_record.description)
-            indexs.append(anchor_index)
-            extras.append(extra)
-            amino_acids.append(amino_acid)
-            gene_names.append(gene_name)
-            accessions.append(accession)
-            functionalitys.append(functionality)
-            partials.append(partial)    
+            data['results'].append(seq_record.description)
+            data['indexs'].append(anchor_index)
+            data['extras'].append(extra)
+            data['amino_acids'].append(amino_acid)
+            data['gene_names'].append(gene_name)
+            data['accessions'].append(accession)
+            data['functionalitys'].append(functionality)
+            data['partials'].append(partial)
         else:
-            error_indexs.append(anchor_index)
-            error_results.append(seq_record.description)
-            sequence.append(seq_record.seq)
+            data['error_indexs'].append(anchor_index)
+            data['error_results'].append(seq_record.description)
+            data['sequence'].append(seq_record.seq)
+
+    return data
 
 
-
-def generate_anchor_file(fileName):
+def generate_anchor_file(fileName, results, indexs):
     '''generate the anchor file for both v genes and j genes
 
     Attributes
     ----------
         fileName (str): file name for the anchor file generated
+        results (list): list of results
+        indexs (list): list of indexs
     '''
     fileName = fileName + '.csv'
     with open(fileName, 'w') as csv_file:
@@ -208,7 +238,7 @@ def generate_anchor_file(fileName):
             csv_writer.writerow({'gene': result, 'anchor_index': index})
 
 
-def generate_error_file(fileName):
+def generate_error_file(fileName, error_results, sequence, error_indexs):
     # only works for csv files
     '''Generate the error anchor file for v genes with no C or C apearance
        in the begenning of the chain and generate the error anchor file for j
@@ -219,6 +249,7 @@ def generate_error_file(fileName):
     ----------
         fileName (str): file name for the complementary anchor file generated
     '''
+    # TODO: update docstring ^
     fileName = fileName.split('.csv')[0] + '_error.csv'
     with open(fileName, 'w') as csv_file:
         fieldnames = ['gene','sequence','anchor_index']
@@ -229,7 +260,12 @@ def generate_error_file(fileName):
             csv_writer.writerow({'gene': error_result, 'sequence':seq,'anchor_index': error_index})
 
 
-def generate_extra_nucleotides_file_Vgene(fileName):
+def generate_extra_nucleotides_file_Vgene(fileName, gene_names, extras,
+                                          amino_acids, accessions,
+                                          functionalitys, partials):
+    '''
+    '''
+    # TODO: update docstring ^
     fileName = fileName.split('.csv')[0] + '_extra_nucleotides.csv'
     with open(fileName, 'w') as csv_file:
         fieldnames = ['gene_name','amino_acids','extra_nucleotides','accession','functionality','partial']
@@ -240,7 +276,12 @@ def generate_extra_nucleotides_file_Vgene(fileName):
             csv_writer.writerow({'gene_name': gene_name, 'amino_acids': amino_acid,'extra_nucleotides': extra,'accession':accession,'functionality':functionality,'partial':partial})
 
 
-def generate_extra_nucleotides_file_Jgene(fileName):
+def generate_extra_nucleotides_file_Jgene(fileName, gene_names, extras,
+                                          amino_acids, accessions,
+                                          functionalitys, partials):
+    '''
+    '''
+    # TODO: update docstring ^
     fileName = fileName.split('.csv')[0] + '_extra_nucleotides.csv'
     with open(fileName, 'w') as csv_file:
         fieldnames = ['gene_name','extra_nucleotides','amino_acids','accession','functionality','partial']
