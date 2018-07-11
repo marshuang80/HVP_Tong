@@ -19,24 +19,18 @@ import os
 def main(args):
 
     # Read in command line arguments to variables
-    # v_or_j = args.t.upper()
     input_dir = args.i
     output_dir = args.o
 
     #run with python excelScript.py
     book = xlwt.Workbook()
-    
+
     for filename in os.listdir(input_dir):
         infile = os.path.join(input_dir, filename)
         filename = filename.split('.')[-2]
-        sheet = book.add_sheet(filename)    
-
-        header = ['gene','allele','extra_nucleotides','amino_acids','accession','functionality','partial']
-
+        sheet = book.add_sheet(filename)
         output_filename = f"{output_dir}{filename}"
 
-        for column, heading in enumerate(header):
-            sheet.write(0, column, heading)
         if 'J-REGION' in [a for a in open(infile)][0]:
             v_or_j = 'J'
         elif 'V-REGION' in [a for a in open(infile)][0]:
@@ -56,7 +50,7 @@ def main(args):
                               output_data['accessions'],
                               output_data['functionalitys'],
                               output_data['partials'])
-            write_excel_sheet(sheet, output_data)
+            write_excel_sheet_v(sheet, output_data)
         else:
             output_data = parse_j_genes(infile)
             generate_extra_nucleotides_file_Jgene(output_filename,
@@ -66,7 +60,7 @@ def main(args):
                                   output_data['accessions'],
                                   output_data['functionalitys'],
                                   output_data['partials'])
-            write_excel_sheet(sheet, output_data)
+            write_excel_sheet_j(sheet, output_data)
         generate_error_file(output_filename,
                     output_data['error_results'],
                     output_data['sequence'],
@@ -74,40 +68,9 @@ def main(args):
         generate_anchor_file(output_filename,
                      output_data['results'],
                      output_data['indexs'])
-        # TODO 
-    excel_file_name = output_dir + "/TONG_IS_SEXY.xls"
+
+    excel_file_name = output_dir + "contributions.xls"
     book.save(excel_file_name)
-
-
-
-
-def write_excel_sheet(sheet, output_data):
-    '''DOCUMENT YOUR DARM CODE
-    '''
-
-    for row, gene in enumerate(output_data['genes']):
-        sheet.write(row+1, 0, str(gene))
-
-    for row, allele in enumerate(output_data['alleles']):
-        sheet.write(row+1, 1, str(allele))
-        
-    for row, extra_nucleotides in enumerate(output_data['extras']):
-        sheet.write(row+1, 2, str(extra_nucleotides))
-        
-    #partials
-
-    for row, amino in enumerate(output_data['amino_acids']):
-        sheet.write(row+1, 3, str(amino))
-        
-    for row, accession in enumerate(output_data['accessions']):
-        sheet.write(row+1, 4, str(accession))
-        
-    for row, functionality in enumerate(output_data['functionalitys']):
-        sheet.write(row+1, 5, str(functionality))
-        
-    for row, partial in enumerate(output_data['partials']):
-        sheet.write(row+1, 6, partial)
-
 
 
 
@@ -177,8 +140,7 @@ def parse_j_genes(infile):
 
         splitted_gene_name = gene_name.split('*')
         gene = splitted_gene_name[0]
-        allele = splitted_gene_name[1]
-
+        allele = splitted_gene_name[1][1]
 
         # look for only positive indexs
         pos_idx = [i for i in ind if i >=0]
@@ -207,7 +169,7 @@ def parse_j_genes(infile):
             data['extras'].append(extra)
             data['amino_acids'].append(amino_acid)
             data['genes'].append(gene)
-            data['alleles'].append(allele) 
+            data['alleles'].append(allele)
             data['gene_names'].append(gene_name)
             data['accessions'].append(accession)
             data['functionalitys'].append(functionality)
@@ -274,8 +236,8 @@ def parse_v_genes(infile):
 
         splitted_gene_name = gene_name.split('*')
         gene = splitted_gene_name[0]
-        allele = splitted_gene_name[1]
-        
+        allele = splitted_gene_name[1][1]
+
         #filter out abnormal V genes
         threshold = len(seq_record.seq)/2
         if int(anchor_index) > threshold:
@@ -285,7 +247,7 @@ def parse_v_genes(infile):
             data['amino_acids'].append(amino_acid)
             data['gene_names'].append(gene_name)
             data['genes'].append(gene)
-            data['alleles'].append(allele) 
+            data['alleles'].append(allele)
             data['accessions'].append(accession)
             data['functionalitys'].append(functionality)
             data['partials'].append(partial)
@@ -295,6 +257,7 @@ def parse_v_genes(infile):
             data['sequence'].append(seq_record.seq)
 
     return data
+
 
 
 def generate_anchor_file(fileName, results, indexs):
@@ -314,6 +277,7 @@ def generate_anchor_file(fileName, results, indexs):
 
         for result, index in zip(results, indexs):
             csv_writer.writerow({'gene': result, 'anchor_index': index})
+
 
 
 def generate_error_file(fileName, error_results, sequence, error_indexs):
@@ -336,6 +300,7 @@ def generate_error_file(fileName, error_results, sequence, error_indexs):
 
         for error_result, seq, error_index in zip(error_results, sequence, error_indexs):
             csv_writer.writerow({'gene': error_result, 'sequence':seq,'anchor_index': error_index})
+
 
 
 def generate_extra_nucleotides_file_Vgene(fileName, gene_names, extras,
@@ -370,20 +335,96 @@ def generate_extra_nucleotides_file_Jgene(fileName, gene_names, extras,
             csv_writer.writerow({'gene_name': gene_name,'extra_nucleotides': extra,'amino_acids':amino_acid,'accession':accession,'functionality':functionality,'partial':partial})
 
 
+
+def write_excel_sheet_j(sheet, output_data):
+    '''Generate the excel sheet for j genes with
+       gene, allele, extra_nucleotides, amino_acids,
+       accession, functionfunctionality and partial
+
+
+    Attributes
+    ----------
+        sheet: the sheet to write into
+    '''
+
+    header = ['gene','allele','extra_nucleotides','amino_acids','accession','functionality','partial']
+    for column, heading in enumerate(header):
+            sheet.write(0, column, heading)
+
+    for row, gene in enumerate(output_data['genes']):
+        sheet.write(row+1, 0, str(gene))
+
+    for row, allele in enumerate(output_data['alleles']):
+        sheet.write(row+1, 1, str(allele))
+
+    for row, extra_nucleotides in enumerate(output_data['extras']):
+        sheet.write(row+1, 2, str(extra_nucleotides))
+
+    #partials
+
+    for row, amino in enumerate(output_data['amino_acids']):
+        sheet.write(row+1, 3, str(amino))
+
+    for row, accession in enumerate(output_data['accessions']):
+        sheet.write(row+1, 4, str(accession))
+
+    for row, functionality in enumerate(output_data['functionalitys']):
+        sheet.write(row+1, 5, str(functionality))
+
+    for row, partial in enumerate(output_data['partials']):
+        sheet.write(row+1, 6, partial)
+
+
+
+def write_excel_sheet_v(sheet, output_data):
+    '''Generate the excel sheet for v genes with
+       gene, allele, amino_acids, extra_nucleotides,
+       accession, functionfunctionality and partial
+
+
+    Attributes
+    ----------
+        sheet: the sheet to write into
+    '''
+
+    header = ['gene','allele','amino_acids','extra_nucleotides','accession','functionality','partial']
+    for column, heading in enumerate(header):
+            sheet.write(0, column, heading)
+
+    for row, gene in enumerate(output_data['genes']):
+        sheet.write(row+1, 0, str(gene))
+
+    for row, allele in enumerate(output_data['alleles']):
+        sheet.write(row+1, 1, str(allele))
+
+    for row, amino in enumerate(output_data['amino_acids']):
+        sheet.write(row+1, 2, str(amino))
+
+    for row, extra_nucleotides in enumerate(output_data['extras']):
+        sheet.write(row+1, 3, str(extra_nucleotides))
+
+    for row, accession in enumerate(output_data['accessions']):
+        sheet.write(row+1, 4, str(accession))
+
+    for row, functionality in enumerate(output_data['functionalitys']):
+        sheet.write(row+1, 5, str(functionality))
+
+    for row, partial in enumerate(output_data['partials']):
+        sheet.write(row+1, 6, partial)
+
+
+
 if __name__ == '__main__':
 
     # Set commend line arugments
     parser = argparse.ArgumentParser()
-    # TODO: 
+    # TODO:
     #parser.add_argument('-t', help = 'type V or J')
     parser.add_argument('-i', help = 'path to the input file')
     parser.add_argument('-o', help = 'path to the output file')
     args = parser.parse_args()
 
-    # message for wrong command line
-    # TODO 
-    #if (args.t == None or args.i == None or args.o == None):
     if (args.i == None or args.o == None):
-        print("Command line arugment error\nCorrect Usage:\npython anchors_generator.py -t {V,J} -i <full path of input file> -o <full path to output file>")
+        print("Command line arugment error\nCorrect Usage:\npython anchors_generator.py -i <full path of input file> -o <full path to output file>")
         sys.exit()
     main(args)

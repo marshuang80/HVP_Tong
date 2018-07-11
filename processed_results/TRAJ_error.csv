@@ -1,8 +1,0 @@
-gene;sequence;anchor_index
-M94081|TRAJ16*01|Homo sapiens|F|J-REGION|68743..68802|60 nt|3| | | | |60+0=60| | |;ggttttcagatggccagaagctgctctttgcaaggggaaccatgttaaaggtggatctta;0
-M94081|TRAJ35*01|Homo sapiens|ORF|J-REGION|46885..46943|59 nt|2| | | | |59+0=59| | |;gataggctttgggaatgtgctgcattgcgggtccggcactcaagtgattgttttaccac;0
-M94081|TRAJ51*01|Homo sapiens|P|J-REGION|27429..27491|63 nt|3| | | | |63+0=63| | |;agatgcgtgacagctatgagaagctgatatttggaaaggagacatgactaactgtgaagccaa;0
-M94081|TRAJ55*01|Homo sapiens|P|J-REGION|21944..22000|57 nt|3| | | | |57+0=57| | |;acaagtgctggtaatgctcctgttggggaaaggggatgagtacaaaaataaatccaa;0
-M94081|TRAJ56*01|Homo sapiens|F|J-REGION|19768..19829|62 nt|2| | | | |62+0=62| | |;ttatactggagccaatagtaagctgacatttggaaaaggaataactctgagtgttagaccag;0
-M94081|TRAJ61*01|Homo sapiens|ORF|J-REGION|15564..15623|60 nt|3| | | | |60+0=60| | |;ggtaccgggttaataggaaactgacatttggagccaacactagaggaatcatgaaactca;0
-M94081|TRAJ7*01|Homo sapiens|F|J-REGION|77821..77879|59 nt|2| | | | |59+0=59| | |;tgactatgggaacaacagactcgcttttgggaaggggaaccaagtggtggtcataccaa;0
