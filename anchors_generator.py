@@ -22,6 +22,14 @@ def main(args):
     input_dir = args.i
     output_dir = args.o
 
+    if output_dir[-1] is not "/":
+        output_dir += "/"
+
+    try:
+        os.makedirs(output_dir)
+    except:
+        pass
+
     #run with python excelScript.py
     book = xlwt.Workbook()
 
@@ -31,11 +39,12 @@ def main(args):
         sheet = book.add_sheet(filename)
         output_filename = f"{output_dir}{filename}"
 
-        if 'J-REGION' in [a for a in open(infile)][0]:
+        #if 'J-REGION' in [a for a in open(infile)][0]:
+        first_line = [a for a in open(infile)][0]
+        if re.split(string=first_line, pattern=r"[0-9\-]+\*")[0][-1] == 'J':
             v_or_j = 'J'
-        elif 'V-REGION' in [a for a in open(infile)][0]:
+        elif re.split(string=first_line, pattern=r"[0-9\-]+\*")[0][-1] == 'V':
             v_or_j = 'V'
-        # Todo: change this V
         else:
             v_or_j = args.t.upper()
 
@@ -350,31 +359,39 @@ def write_excel_sheet_j(sheet, output_data):
     header = ['gene','allele','extra_nucleotides','amino_acids','accession','functionality','partial']
     output_data = {k: [x for _, _, x in sorted(zip(output_data['genes'], output_data['alleles'], v), key=lambda pair: (pair[0],pair[1]))] for k,v in output_data.items()}
 
+    # set cell color
+    genes = output_data['genes']
+    colors = ['light_blue','light_green', 'light_orange','light_turquoise','light_yellow'] * int(len(set(genes)) / 5 + 1)
+
+    styles = {g:xlwt.easyxf(f'pattern: pattern solid, fore_colour {c};') for g,c in zip(sorted(set(genes),key=genes.index), colors)}
+
     for column, heading in enumerate(header):
-            sheet.write(0, column, heading)
+        sheet.write(0, column, heading)
 
     for row, gene in enumerate(output_data['genes']):
-        sheet.write(row+1, 0, str(gene))
+        sheet.write(row+1, 0, str(gene), styles[genes[row]])
 
     for row, allele in enumerate(output_data['alleles']):
-        sheet.write(row+1, 1, str(allele))
+        sheet.write(row+1, 1, str(allele), styles[genes[row]])
 
     for row, extra_nucleotides in enumerate(output_data['extras']):
-        sheet.write(row+1, 2, str(extra_nucleotides))
+        sheet.write(row+1, 2, str(extra_nucleotides), styles[genes[row]])
 
     #partials
 
     for row, amino in enumerate(output_data['amino_acids']):
-        sheet.write(row+1, 3, str(amino))
+        sheet.write(row+1, 3, str(amino), styles[genes[row]])
 
     for row, accession in enumerate(output_data['accessions']):
-        sheet.write(row+1, 4, str(accession))
+        sheet.write(row+1, 4, str(accession), styles[genes[row]])
 
     for row, functionality in enumerate(output_data['functionalitys']):
-        sheet.write(row+1, 5, str(functionality))
+        sheet.write(row+1, 5, str(functionality), styles[genes[row]])
 
     for row, partial in enumerate(output_data['partials']):
-        sheet.write(row+1, 6, partial)
+        sheet.write(row+1, 6, partial, styles[genes[row]])
+
+
 
 
 
@@ -392,29 +409,35 @@ def write_excel_sheet_v(sheet, output_data):
     header = ['gene','allele','amino_acids','extra_nucleotides','accession','functionality','partial']
     output_data = {k: [x for _, _, x in sorted(zip(output_data['genes'], output_data['alleles'], v), key=lambda pair: (pair[0],pair[1]))] for k,v in output_data.items()}
 
+    # set cell color
+    genes = output_data['genes']
+    colors = ['light_blue','light_green', 'light_orange','light_turquoise','light_yellow'] * int(len(set(genes)) / 5 + 1)
+
+    styles = {g:xlwt.easyxf(f'pattern: pattern solid, fore_colour {c};') for g,c in zip(sorted(set(genes),key=genes.index), colors)}
+
     for column, heading in enumerate(header):
             sheet.write(0, column, heading)
 
     for row, gene in enumerate(output_data['genes']):
-        sheet.write(row+1, 0, str(gene))
+        sheet.write(row+1, 0, str(gene), styles[genes[row]])
 
     for row, allele in enumerate(output_data['alleles']):
-        sheet.write(row+1, 1, str(allele))
+        sheet.write(row+1, 1, str(allele), styles[genes[row]])
 
     for row, amino in enumerate(output_data['amino_acids']):
-        sheet.write(row+1, 2, str(amino))
+        sheet.write(row+1, 2, str(amino), styles[genes[row]])
 
     for row, extra_nucleotides in enumerate(output_data['extras']):
-        sheet.write(row+1, 3, str(extra_nucleotides))
+        sheet.write(row+1, 3, str(extra_nucleotides), styles[genes[row]])
 
     for row, accession in enumerate(output_data['accessions']):
-        sheet.write(row+1, 4, str(accession))
+        sheet.write(row+1, 4, str(accession), styles[genes[row]])
 
     for row, functionality in enumerate(output_data['functionalitys']):
-        sheet.write(row+1, 5, str(functionality))
+        sheet.write(row+1, 5, str(functionality), styles[genes[row]])
 
     for row, partial in enumerate(output_data['partials']):
-        sheet.write(row+1, 6, partial)
+        sheet.write(row+1, 6, partial, styles[genes[row]])
 
 
 
