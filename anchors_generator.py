@@ -348,6 +348,8 @@ def write_excel_sheet_j(sheet, output_data):
     '''
 
     header = ['gene','allele','extra_nucleotides','amino_acids','accession','functionality','partial']
+    output_data = {k: [x for _, _, x in sorted(zip(output_data['genes'], output_data['alleles'], v), key=lambda pair: (pair[0],pair[1]))] for k,v in output_data.items()}
+
     for column, heading in enumerate(header):
             sheet.write(0, column, heading)
 
@@ -388,6 +390,8 @@ def write_excel_sheet_v(sheet, output_data):
     '''
 
     header = ['gene','allele','amino_acids','extra_nucleotides','accession','functionality','partial']
+    output_data = {k: [x for _, _, x in sorted(zip(output_data['genes'], output_data['alleles'], v), key=lambda pair: (pair[0],pair[1]))] for k,v in output_data.items()}
+
     for column, heading in enumerate(header):
             sheet.write(0, column, heading)
 
